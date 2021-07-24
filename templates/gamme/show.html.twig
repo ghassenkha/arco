@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gamme{% endblock %}
+
+{% block body %}
+    <h1>Gamme</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ gamme.id }}</td>
+            </tr>
+            <tr>
+                <th>No</th>
+                <td>{{ gamme.no }}</td>
+            </tr>
+            <tr>
+                <th>Op</th>
+                <td>{{ gamme.op }}</td>
+            </tr>
+            <tr>
+                <th>Poste</th>
+                <td>{{ gamme.poste }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ gamme.description }}</td>
+            </tr>
+            <tr>
+                <th>Setup</th>
+                <td>{{ gamme.setup }}</td>
+            </tr>
+            <tr>
+                <th>Run</th>
+                <td>{{ gamme.run }}</td>
+            </tr>
+            <tr>
+                <th>Qth</th>
+                <td>{{ gamme.qth }}</td>
+            </tr>
+            <tr>
+                <th>Qtemoh</th>
+                <td>{{ gamme.qtemoh }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('gamme_index') }}">back to list</a>
+
+    <a href="{{ path('gamme_edit', {'id': gamme.id}) }}">edit</a>
+
+    {{ include('gamme/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,14 @@
+{{ form_start(form) }}
+    {% for datatype in form.week %}
+        <th>
+            <div class="icheck-primary d-inline">
+                {{ form_widget(datatype) }}
+                {{ form_label(datatype, " ") }}
+            </div>
+
+        </th>
+    {% endfor %}
+<th>
+    {{ form_row(form.save, {'attr': {'class': 'btn-shadow d-inline-flex align-items-center btn btn-success'}}) }}
+</th>
+{{ form_end(form) }}

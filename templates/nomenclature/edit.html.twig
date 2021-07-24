@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Nomenclature{% endblock %}
+
+{% block body %}
+    <h1>Edit Nomenclature</h1>
+
+    {{ include('nomenclature/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('nomenclature_index') }}">back to list</a>
+
+    {{ include('nomenclature/_delete_form.html.twig') }}
+{% endblock %}

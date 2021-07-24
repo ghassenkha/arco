@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Besoin{% endblock %}
+
+{% block body %}
+    <h1>Besoin</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ besoin.id }}</td>
+            </tr>
+            <tr>
+                <th>No</th>
+                <td>{{ besoin.no }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ besoin.description }}</td>
+            </tr>
+            <tr>
+                <th>S1</th>
+                <td>{{ besoin.s1 }}</td>
+            </tr>
+            <tr>
+                <th>S2</th>
+                <td>{{ besoin.s2 }}</td>
+            </tr>
+            <tr>
+                <th>S3</th>
+                <td>{{ besoin.s3 }}</td>
+            </tr>
+            <tr>
+                <th>S4</th>
+                <td>{{ besoin.s4 }}</td>
+            </tr>
+            <tr>
+                <th>S5</th>
+                <td>{{ besoin.s5 }}</td>
+            </tr>
+            <tr>
+                <th>S6</th>
+                <td>{{ besoin.s6 }}</td>
+            </tr>
+            <tr>
+                <th>S7</th>
+                <td>{{ besoin.s7 }}</td>
+            </tr>
+            <tr>
+                <th>S8</th>
+                <td>{{ besoin.s8 }}</td>
+            </tr>
+            <tr>
+                <th>S9</th>
+                <td>{{ besoin.s9 }}</td>
+            </tr>
+            <tr>
+                <th>S10</th>
+                <td>{{ besoin.s10 }}</td>
+            </tr>
+            <tr>
+                <th>S11</th>
+                <td>{{ besoin.s11 }}</td>
+            </tr>
+            <tr>
+                <th>S12</th>
+                <td>{{ besoin.s12 }}</td>
+            </tr>
+            <tr>
+                <th>S13</th>
+                <td>{{ besoin.s13 }}</td>
+            </tr>
+            <tr>
+                <th>S14</th>
+                <td>{{ besoin.s14 }}</td>
+            </tr>
+            <tr>
+                <th>S15</th>
+                <td>{{ besoin.s15 }}</td>
+            </tr>
+            <tr>
+                <th>S16</th>
+                <td>{{ besoin.s16 }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('besoin_index') }}">back to list</a>
+
+    <a href="{{ path('besoin_edit', {'id': besoin.id}) }}">edit</a>
+
+    {{ include('besoin/_delete_form.html.twig') }}
+{% endblock %}

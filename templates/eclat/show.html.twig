@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Eclat{% endblock %}
+
+{% block body %}
+    <h1>Eclat</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ eclat.id }}</td>
+            </tr>
+            <tr>
+                <th>No</th>
+                <td>{{ eclat.no }}</td>
+            </tr>
+            <tr>
+                <th>Qt</th>
+                <td>{{ eclat.qt }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('eclat_index') }}">back to list</a>
+
+    <a href="{{ path('eclat_edit', {'id': eclat.id}) }}">edit</a>
+
+    {{ include('eclat/_delete_form.html.twig') }}
+{% endblock %}

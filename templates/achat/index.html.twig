@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Achat index{% endblock %}
+
+{% block body %}
+    <h1>Achat index</h1>
+
+    <table id="example" class="table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Qt</th>
+                <th>stock</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for achat in achats %}
+            <tr>
+                <td class="text-danger">{{ achat.no }}</td>
+                <td>{{ achat.qt }}</td>
+                <td>{{ achat.stock }}</td>
+                
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('achat_new') }}">Create new</a>
+{% endblock %}

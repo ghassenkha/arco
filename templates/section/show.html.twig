@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Section{% endblock %}
+
+{% block body %}
+    <h1>Section</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ section.id }}</td>
+            </tr>
+            <tr>
+                <th>Poste</th>
+                <td>{{ section.poste }}</td>
+            </tr>
+            <tr>
+                <th>Sect</th>
+                <td>{{ section.sect }}</td>
+            </tr>
+            <tr>
+                <th>Eff</th>
+                <td>{{ section.eff }}</td>
+            </tr>
+            <tr>
+                <th>Ineff</th>
+                <td>{{ section.ineff }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('section_index') }}">back to list</a>
+
+    <a href="{{ path('section_edit', {'id': section.id}) }}">edit</a>
+
+    {{ include('section/_delete_form.html.twig') }}
+{% endblock %}

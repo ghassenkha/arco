@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gamme index{% endblock %}
+
+{% block body %}
+    <h1>Gamme index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>No</th>
+                <th>Op</th>
+                <th>Poste</th>
+                <th>Description</th>
+                <th>Setup</th>
+                <th>Run</th>
+                <th>Qth</th>
+                <th>Qtemoh</th>
+                <th>Qtemop</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for gamme in gammes %}
+            <tr>
+                <td>{{ gamme.id }}</td>
+                <td>{{ gamme.no }}</td>
+                <td>{{ gamme.op }}</td>
+                <td>{{ gamme.poste }}</td>
+                <td>{{ gamme.description }}</td>
+                <td>{{ gamme.setup }}</td>
+                <td>{{ gamme.run }}</td>
+                <td>{{ gamme.qth }}</td>
+                <td>{{ gamme.qtemoh }}</td>
+                <td>{{ gamme.qtemop }}</td>
+                <td>
+                    <a href="{{ path('gamme_show', {'id': gamme.id}) }}">show</a>
+                    <a href="{{ path('gamme_edit', {'id': gamme.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('gamme_new') }}">Create new</a>
+{% endblock %}

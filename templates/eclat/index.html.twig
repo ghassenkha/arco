@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Eclat index{% endblock %}
+
+{% block body %}
+    <h1>Eclat index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>No</th>
+                <th>Qt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for eclat in eclats %}
+            <tr>
+                <td>{{ eclat.id }}</td>
+                <td>{{ eclat.no }}</td>
+                <td>{{ eclat.qt }}</td>
+                <td>
+                    <a href="{{ path('eclat_show', {'id': eclat.id}) }}">show</a>
+                    <a href="{{ path('eclat_edit', {'id': eclat.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('eclat_new') }}">Create new</a>
+{% endblock %}

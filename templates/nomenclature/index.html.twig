@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nomenclature index{% endblock %}
+
+{% block body %}
+    <h1>Nomenclature index</h1><a class="btn btn-info" href="{{ path('nomc_import') }}" role="button">Update</a>
+
+    <table id="example" class="table">
+        <thead>
+            <tr>
+                <th>BOM_No</th>
+                <th>No</th>
+                <th>Qt_per</th>
+                <th>SystReap</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for nomenclature in nomenclatures %}
+            <tr>
+                <td>{{ nomenclature.BOMNo }}</td>
+                <td>{{ nomenclature.No }}</td>
+                <td>{{ nomenclature.qtPer }}</td>
+                <td>{{ nomenclature.SystReap }}</td>
+                <td>
+                    <a href="{{ path('nomenclature_show', {'id': nomenclature.id}) }}">show</a>
+                    <a href="{{ path('nomenclature_edit', {'id': nomenclature.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('nomenclature_new') }}">Create new</a>
+{% endblock %}
