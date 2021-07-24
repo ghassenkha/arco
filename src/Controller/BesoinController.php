@@ -246,6 +246,7 @@ class BesoinController extends AbstractController
             if (sizeof($besoin) > 0) {
 
 
+
 //                $qb = $em->createQueryBuilder();             //Reset Table Eclat For New Insert
 //                $qb->delete('App\Entity\Eclat', 's')
 //                    ->getQuery()
