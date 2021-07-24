@@ -247,6 +247,8 @@ class BesoinController extends AbstractController
 
 
 
+
+                
 //                $qb = $em->createQueryBuilder();             //Reset Table Eclat For New Insert
 //                $qb->delete('App\Entity\Eclat', 's')
 //                    ->getQuery()
