@@ -3,16 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Besoin;
-use App\Entity\Period;
 use App\Entity\Eclat;
 use App\Entity\Production;
 use App\Entity\Achat;
 use App\Form\BesoinType;
 use App\Form\PeriodType;
 use App\Repository\BesoinRepository;
-use App\Repository\ProductionRepository;
-use App\Repository\AchatRepository;
-use App\Repository\EclatRepository;
 use App\Repository\NomenclatureRepository;
 use App\Repository\PeriodRepository;
 use App\Repository\StockRepository;
@@ -37,7 +33,6 @@ class BesoinController extends AbstractController
     {
         $period = $periodRepository->findAll();
         $besoin = $besoinRepository->findAll();
-        $em = $this->getDoctrine()->getManager();
 
 
         $form = $this->createForm(PeriodType::class, $period[0]);
@@ -72,7 +67,7 @@ class BesoinController extends AbstractController
         foreach ($besoin as $b) {
             $somme = $SommeService->SommeCalcule($b, $lastweek);  //Calcul
 
-            $qb = $em->createQueryBuilder('b')                    // Updating
+            $em->createQueryBuilder('b')                    // Updating
             ->update('App\Entity\Besoin', 'b')
                 ->set('b.somme', '?1')
                 ->where('b.id = ?2')
@@ -117,7 +112,7 @@ class BesoinController extends AbstractController
 
         foreach ($sheetData as $Row) {
             $no = $Row['A'];
-            $desc = $Row['B'];
+            $desc = $Row['B'];       ///// to be edited
 
             if (strlen($no)) {  //// to stop the insertion of null line
                 $besoin = new Besoin();
@@ -245,10 +240,6 @@ class BesoinController extends AbstractController
 
             if (sizeof($besoin) > 0) {
 
-
-
-
-                
 //                $qb = $em->createQueryBuilder();             //Reset Table Eclat For New Insert
 //                $qb->delete('App\Entity\Eclat', 's')
 //                    ->getQuery()
