@@ -14,6 +14,7 @@ class AchatType extends AbstractType
         $builder
             ->add('no')
             ->add('qt')
+            ->add('origine')
         ;
     }
 

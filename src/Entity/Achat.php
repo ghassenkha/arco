@@ -27,6 +27,8 @@ class Achat
      */
     private $qt;
 
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -55,4 +57,6 @@ class Achat
 
         return $this;
     }
+
+
 }

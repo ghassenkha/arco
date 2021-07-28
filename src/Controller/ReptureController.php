@@ -6,6 +6,7 @@ use App\Entity\Achat;
 use App\Form\AchatType;
 use App\Repository\AchatRepository;
 use App\Repository\StockRepository;
+use App\Service\EclatService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ class ReptureController extends AbstractController
     /**
      * @Route("/", name="repture_index", methods={"GET"})
      */
-    public function index(AchatRepository $achatRepository,StockRepository $stockRepository): Response
+    public function index(AchatRepository $achatRepository,StockRepository $stockRepository,EclatService $EclatService): Response
     {
 
         $achats = array();
@@ -31,15 +32,17 @@ class ReptureController extends AbstractController
                 $stock=$stock->getQt();}
             else $stock=0;
             if ($stock<$p->getQt()) {
-            	array_push($achats,["no"=> $p->getNo(),"qt"=>$p->getQt(),"stock"=>$stock]);
+                $ecart=$stock-$p->getQt();
+                $couv=100*$stock/$p->getQt();
+                $acmd= $ecart*1.1;
+            	array_push($achats,["no"=> $p->getNo(),"qt"=>$p->getQt(),"origine"=>$p->getOrigine(),"stock"=>$stock,"ecart"=>$ecart,"couv"=>$couv,"acmd"=>$acmd]);
             }
 
-            
+
             
 
 
         }
-        
         return $this->render('repture/index.html.twig', [
             'achats' => $achats,
         ]);

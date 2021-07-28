@@ -11,6 +11,10 @@
                 <th>No</th>
                 <th>Qt</th>
                 <th>stock</th>
+                <th>Ecart</th>
+                <th>Taux de couverture</th>
+                <th>A Commander (ecart+10%)</th>
+                <th>Origine</th>
             </tr>
         </thead>
         <tbody>
@@ -19,7 +23,11 @@
                 <td class="text-danger">{{ achat.no }}</td>
                 <td>{{ achat.qt }}</td>
                 <td>{{ achat.stock }}</td>
-                
+                <td>{{ achat.ecart }}</td>
+                <td>{{ achat.couv|number_format(0, '.', '') }} % </td>
+                <td>{{ achat.acmd }}</td>
+                <td>{{ achat.origine }}</td>
+
             </tr>
         {% else %}
             <tr>

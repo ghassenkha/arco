@@ -3,15 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Besoin;
-use App\Entity\Eclat;
 use App\Entity\Production;
 use App\Entity\Achat;
 use App\Form\BesoinType;
 use App\Form\PeriodType;
 use App\Repository\BesoinRepository;
-use App\Repository\NomenclatureRepository;
 use App\Repository\PeriodRepository;
-use App\Repository\StockRepository;
 use App\Service\EclatService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,13 +28,19 @@ class BesoinController extends AbstractController
      */
     public function index(BesoinRepository $besoinRepository, Request $request, PeriodRepository $periodRepository): Response
     {
-        $period = $periodRepository->findAll();
-        $besoin = $besoinRepository->findAll();
 
+        // get all Besoin
+        // Get periode
+        $besoin = $besoinRepository->findAll();
+        $count=0;
+        foreach ($besoin as $b){
+            if($b->getSomme()>0)
+            $count++;
+        }
+        $period = $periodRepository->findAll();
 
         $form = $this->createForm(PeriodType::class, $period[0]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -47,9 +50,11 @@ class BesoinController extends AbstractController
         return $this->renderForm('besoin/index.html.twig', [
             'besoins' => $besoin,
             'form' => $form,
-            'period' => $period[0]
+            'period' => $period[0],
+            'count'=>$count
         ]);
     }
+
 
 
     /**
@@ -57,11 +62,10 @@ class BesoinController extends AbstractController
      */
     public function UpdateSomme(BesoinRepository $besoinRepository, PeriodRepository $periodRepository, SommeService $SommeService)
     {
-        $period = $periodRepository->findAll();
-        $lastweek = intval($period[0]->getWeek()); //convert string to int
-
         $em = $this->getDoctrine()->getManager();
 
+        $period = $periodRepository->findAll();
+        $lastweek = intval($period[0]->getWeek()); //convert string to int
         $besoin = $besoinRepository->findAll();
 
         foreach ($besoin as $b) {
@@ -76,9 +80,7 @@ class BesoinController extends AbstractController
                 ->getQuery()
                 ->getResult();
         }
-
         return $this->redirectToRoute('besoin_index');
-
     }
 
     /**
@@ -127,65 +129,33 @@ class BesoinController extends AbstractController
                     }
                     $besoin->{"setS" . $i}(${'s' . $i}); // insert rows in besoin
                 }
-
                 $somme = $SommeService->SommeCalcule($besoin, $lastweek); // calculer la somme selon la periode
 
                 $besoin->setSomme($somme);
                 $em->persist($besoin);
-
-                $em->flush();
-                $em->clear(); // Detaches all objects from Doctrine!
-
             }
-            // here Doctrine checks all the fields of all fetched data and make a transaction to the database.
             $em->flush();
             $em->clear();
 
         }
         return $this->redirectToRoute('besoin_index');
-
-//        return $this->redirectToRoute('article_index'
-//        );
-
     }
-    public function sumGB($table){
-        $data = array();
-        $result = array();
-        foreach ($table as $a)
-            array_push($data,["no"=> $a->getNo(),"qt"=>$a->getQt()]);
 
-        // predefine array
-        $data_summ = array();
-        foreach ( $data as $value ) {
-            $data_summ[ $value['no'] ] = 0;
-        }
-        foreach ( $data as $list ) {
 
-            $data_summ[ $list['no'] ] += $list['qt'];
-        }
-        foreach ($data_summ as $no => $v){
-            array_push($result,["no"=> $no,"qt"=>$v]);
-        }
-        return $result;
-    }
 
     /**
      * @Route("/eclat", name="elcat")
      */
-    public function eclatement(NomenclatureRepository $Nomc, EclatService $EclatService,StockRepository $s): Response
+    public function eclatement( EclatService $EclatService): Response
     {
         $em = $this->getDoctrine()->getManager();
-
-        $qb = $em->createQueryBuilder();                                //Reset Table Eclat
-        $qb->delete('App\Entity\Eclat', 's')
-            ->getQuery()
-            ->getResult();
+        $qb = $em->createQueryBuilder();
                                                                         //Reset Table Achat
         $qb->delete('App\Entity\Achat', 's')
             ->getQuery()
             ->getResult();
                                                                         //get all Besoin
-        $q = $em->createQuery("select b.no, b.somme
+        $q = $em->createQuery("select b.no, b.somme as qt
                                from App\Entity\Besoin b 
                                where b.somme > 0");
         $besoin = $q->getResult();
@@ -198,65 +168,27 @@ class BesoinController extends AbstractController
         foreach ($besoin as $b) {                                ///// insert besoin as Production
             $prod = new Production();
             $prod->setNo($b['no']);
-            $prod->setQt($b['somme']);
+            $prod->setQt($b['qt']);
             $em->persist($prod);
-            $em->flush();
-            $em->clear();
 
-            $prod = new Eclat();                                ///// insert besoin To Eclat
-            $prod->setNo($b['no']);
-            $prod->setQt($b['somme']);
-            $em->persist($prod);
-            $em->flush();
-            $em->clear();
         }
-
-
-
-
-
+        $em->flush();
+        $em->clear();
 
         while ($besoin ){
-
-            $q = $em->createQuery("select p
-                               from App\Entity\Eclat p 
-                               ");
-            $besoin = $q->getResult();
-                                                            //// Eclatement Besoin
-            $EclatResult = $EclatService->Eclat($Nomc, $besoin,$s);
+            //// Eclatement Besoin
+            $EclatResult = $EclatService->Eclat( $besoin );
 
             $achat = $EclatResult['achat'];
-
-            $data_summ = $this->sumGB($achat);
             foreach ($achat as $b) {
                 $em->persist($b);
                 $em->flush();
                 $em->clear();
             }
 
-            /////return Product eclaté à besoin pour reclaculer
             $besoin = $EclatResult['prod'];
-            $besoin = $this->sumGB($besoin);
 
             if (sizeof($besoin) > 0) {
-
-//                $qb = $em->createQueryBuilder();             //Reset Table Eclat For New Insert
-//                $qb->delete('App\Entity\Eclat', 's')
-//                    ->getQuery()
-//                    ->getResult();
-//                foreach ($besoin as $prod) {                  //Insert Result Prod To Eclat Table
-//                    $em->persist($prod);
-//                    $em->flush();
-//                    $em->clear();
-//                }
-//                ///GROUP By RESULT
-//                $q = $em->createQuery("select p.no,sum(p.qt) as somme
-//                               from App\Entity\Eclat p
-//                               GROUP BY p.no");
-//                $besoin = $q->getResult();
-
-
-
                 foreach ($besoin as $b) {
                     $pr = new Production();
                     $pr->setNo($b['no']);
@@ -265,22 +197,8 @@ class BesoinController extends AbstractController
                     $em->flush();
                     $em->clear();
                 }
-
-                $qb = $em->createQueryBuilder();        //Reset Table Eclat
-                $qb->delete('App\Entity\Eclat', 's')
-                    ->getQuery()
-                    ->getResult();
-                foreach ($besoin as $b) {           //// Insert To Eclat To Re Calcul
-                    $pr = new Eclat();
-                    $pr->setNo($b['no']);
-                    $pr->setQt($b['qt']);
-                    $em->persist($pr);
-                    $em->flush();
-                    $em->clear();
-                }
             }
         }
-
 
         $q = $em->createQuery("select p.no,sum(p.qt) as somme
                                from App\Entity\Production p 
@@ -299,33 +217,26 @@ class BesoinController extends AbstractController
             $em->persist($pr);
             $em->flush();
             $em->clear();
-
         }
-        $q = $em->createQuery("select p.no,sum(p.qt) as somme
-                               from App\Entity\Achat p 
-                               GROUP BY p.no");
-        $besoin = $q->getResult();
-
-        $qb = $em->createQueryBuilder();        //Reset Table Product
-        $qb->delete('App\Entity\Achat', 's')
-            ->getQuery()
-            ->getResult();
-
-        foreach ($besoin as $b) {
-//            $ss=$s->findoneBy(['no' => $b['no']]);
-//            if ($ss){
-//                $stock=$ss->getQt();}
-//            else $stock=0;
-
-            $pr = new Achat();
-            $pr->setNo($b['no']);
-            $pr->setQt($b['somme']);
-            $em->persist($pr);
-            $em->flush();
-            $em->clear();
-
-        }
-
+//        $q = $em->createQuery("select p.no,sum(p.qt) as somme
+//                               from App\Entity\Achat p
+//                               GROUP BY p.no");
+//        $besoin = $q->getResult();
+//
+//        $qb = $em->createQueryBuilder();        //Reset Table Product
+//        $qb->delete('App\Entity\Achat', 's')
+//            ->getQuery()
+//            ->getResult();
+//
+//        foreach ($besoin as $b) {
+//            $pr = new Achat();
+//            $pr->setNo($b['no']);
+//            $pr->setQt($b['somme']);
+//            $em->persist($pr);
+//            $em->flush();
+//            $em->clear();
+//
+//        }
 
         return $this->redirectToRoute('besoin_index');
     }

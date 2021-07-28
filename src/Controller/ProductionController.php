@@ -31,8 +31,6 @@ class ProductionController extends AbstractController
                 $stock=$stock->getQt();}
             else $stock=0;
             array_push($productions,["no"=> $p->getNo(),"qt"=>$p->getQt(),"stock"=>$stock]);
-
-
         }
 
         return $this->render('production/index.html.twig', [
