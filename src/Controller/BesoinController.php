@@ -165,17 +165,10 @@ class BesoinController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        foreach ($besoin as $b) {                                ///// insert besoin as Production
-            $prod = new Production();
-            $prod->setNo($b['no']);
-            $prod->setQt($b['qt']);
-            $em->persist($prod);
 
-        }
-        $em->flush();
-        $em->clear();
-
-        while ($besoin ){
+$i=0;
+        while ($besoin and $i<1){
+            $i++;
             //// Eclatement Besoin
             $EclatResult = $EclatService->Eclat( $besoin );
 
@@ -218,25 +211,25 @@ class BesoinController extends AbstractController
             $em->flush();
             $em->clear();
         }
-//        $q = $em->createQuery("select p.no,sum(p.qt) as somme
-//                               from App\Entity\Achat p
-//                               GROUP BY p.no");
-//        $besoin = $q->getResult();
-//
-//        $qb = $em->createQueryBuilder();        //Reset Table Product
-//        $qb->delete('App\Entity\Achat', 's')
-//            ->getQuery()
-//            ->getResult();
-//
-//        foreach ($besoin as $b) {
-//            $pr = new Achat();
-//            $pr->setNo($b['no']);
-//            $pr->setQt($b['somme']);
-//            $em->persist($pr);
-//            $em->flush();
-//            $em->clear();
-//
-//        }
+        $q = $em->createQuery("select p.no,sum(p.qt) as somme
+                               from App\Entity\Achat p
+                               GROUP BY p.no");
+        $besoin = $q->getResult();
+
+        $qb = $em->createQueryBuilder();        //Reset Table Product
+        $qb->delete('App\Entity\Achat', 's')
+            ->getQuery()
+            ->getResult();
+
+        foreach ($besoin as $b) {
+            $pr = new Achat();
+            $pr->setNo($b['no']);
+            $pr->setQt($b['somme']);
+            $em->persist($pr);
+            $em->flush();
+            $em->clear();
+
+        }
 
         return $this->redirectToRoute('besoin_index');
     }

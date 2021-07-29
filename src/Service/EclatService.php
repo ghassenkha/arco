@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Achat;
 use App\Entity\Nomenclature;
 use App\Entity\Eclat;
+use App\Entity\Production;
 use App\Entity\Stock;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -15,7 +16,7 @@ class EclatService extends AbstractController
         $e = $this->getDoctrine()->getRepository(Nomenclature::class);
         $s = $this->getDoctrine()->getRepository(Stock::class);
 
-        $prod = [];
+        $aa = [];
         $achat = [];
 
         foreach ($besoin as $b) {
@@ -31,14 +32,12 @@ class EclatService extends AbstractController
                 } else $stock = 0;
 
                 if ($n->getSystReap() == "1") {   ///Production
-                    if ($stock < $somme) {
-                        $somme = $n->getQtper() * $b['qt'] - $stock;
-                        $p = new Eclat();
-                        $p->setNo($no);
-                        $p->setQt($somme);
+                    $somme = $n->getQtper() * $b['qt'];
+                    $p = new Production();
+                    $p->setNo($no);
+                    $p->setQt($somme);
 
-                        array_push($prod, $p);
-                    }
+                    array_push($aa, $p);
                 } else {
                     $a = new Achat();
                     $a->setNo($no);
@@ -47,29 +46,46 @@ class EclatService extends AbstractController
                 }
             }
         }
+        $aa = $this->sumGB($aa);
+        $prod=array();
+        foreach ($aa as $p){
+            $no=$p['no'];
+            $qt=$p['qt'];
+            $stock = $s->findoneBy(['no' => $no]);
+            if ($stock) {
+                $stock = $stock->getQt();
+            } else $stock = 0;
+
+            $somme=$qt;
+            $p = new Production();
+            $p->setNo($no);
+            $p->setQt($somme);
+            array_push($prod, $p);
+        }
         $prod = $this->sumGB($prod);
 
         return ['prod' => $prod,
             'achat' => $achat];
     }
 
-    public function sumGB($table){
+    public function sumGB($table)
+    {
         $data = array();
         $result = array();
         foreach ($table as $a)
-            array_push($data,["no"=> $a->getNo(),"qt"=>$a->getQt()]);
+            array_push($data, ["no" => $a->getNo(), "qt" => $a->getQt()]);
 
         // predefine array
         $data_summ = array();
-        foreach ( $data as $value ) {
-            $data_summ[ $value['no'] ] = 0;
+        foreach ($data as $value) {
+            $data_summ[$value['no']] = 0;
         }
-        foreach ( $data as $list ) {
+        foreach ($data as $list) {
 
-            $data_summ[ $list['no'] ] += $list['qt'];
+            $data_summ[$list['no']] += $list['qt'];
         }
-        foreach ($data_summ as $no => $v){
-            array_push($result,["no"=> $no,"qt"=>$v]);
+        foreach ($data_summ as $no => $v) {
+            array_push($result, ["no" => $no, "qt" => $v]);
         }
         return $result;
     }
