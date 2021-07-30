@@ -11,28 +11,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class EclatService extends AbstractController
 {
-    public function Eclat($besoin)
+    public function Eclat( $besoin)
     {
         $e = $this->getDoctrine()->getRepository(Nomenclature::class);
-        $s = $this->getDoctrine()->getRepository(Stock::class);
 
         $aa = [];
         $achat = [];
 
         foreach ($besoin as $b) {
+
+
             $nomc = $e->findBy(['BOM_No' => $b['no']]); //chercher les articles dans Nomenclature
+            $qt = $b['qt'];
 
             foreach ($nomc as $n) {
                 $no = $n->getNo();
-                $somme = $n->getQtper() * $b['qt'];
-
-                $stock = $s->findoneBy(['no' => $no]);
-                if ($stock) {
-                    $stock = $stock->getQt();
-                } else $stock = 0;
+                $somme = $n->getQtper() * $qt;
 
                 if ($n->getSystReap() == "1") {   ///Production
-                    $somme = $n->getQtper() * $b['qt'];
                     $p = new Production();
                     $p->setNo($no);
                     $p->setQt($somme);
@@ -44,28 +40,16 @@ class EclatService extends AbstractController
                     $a->setQt($somme);
                     array_push($achat, $a);
                 }
-            }
-        }
-        $aa = $this->sumGB($aa);
-        $prod=array();
-        foreach ($aa as $p){
-            $no=$p['no'];
-            $qt=$p['qt'];
-            $stock = $s->findoneBy(['no' => $no]);
-            if ($stock) {
-                $stock = $stock->getQt();
-            } else $stock = 0;
 
-            $somme=$qt;
-            $p = new Production();
-            $p->setNo($no);
-            $p->setQt($somme);
-            array_push($prod, $p);
+            }
+
         }
-        $prod = $this->sumGB($prod);
+        $prod = $this->sumGB($aa);
+
 
         return ['prod' => $prod,
-            'achat' => $achat];
+            'achat' => $achat
+           ];
     }
 
     public function sumGB($table)
@@ -88,6 +72,33 @@ class EclatService extends AbstractController
             array_push($result, ["no" => $no, "qt" => $v]);
         }
         return $result;
+    }
+
+    public function VerifStock($ss, $besoin)
+    {
+        if (sizeof($ss) > 0) { // if stock
+            foreach ($besoin as $b => $bal) {
+                foreach ($ss as $st => $val) {
+                    if ($ss[$st]['no'] == $bal['no']) {
+                        if ($bal['qt'] >= $ss[$st]['qt']) {
+//                            $ss[$st]['qt'] = 0;
+                            $besoin[$b]['qt'] = $bal['qt'] - $ss[$st]['qt'];
+                            unset($ss[$st]);
+
+                        } else {
+                            $ss[$st]['qt'] = $ss[$st]['qt'] - $bal['qt'];
+//                            $besoin[$b]['qt'] = 0;
+                            unset($besoin[$b]);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        return ['stock' => $ss,
+            'besoin' => $besoin];
+
     }
 
 

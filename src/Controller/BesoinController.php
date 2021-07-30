@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Besoin;
 use App\Entity\Production;
 use App\Entity\Achat;
+use App\Entity\Stock;
 use App\Form\BesoinType;
 use App\Form\PeriodType;
 use App\Repository\BesoinRepository;
@@ -16,6 +17,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Service\SommeService;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 
 /**
@@ -31,6 +36,7 @@ class BesoinController extends AbstractController
 
         // get all Besoin
         // Get periode
+
         $besoin = $besoinRepository->findAll();
         $count=0;
         foreach ($besoin as $b){
@@ -122,8 +128,9 @@ class BesoinController extends AbstractController
                 $besoin->setDescription('fsd');
                 $somme = 0;
                 for ($i = 1; $i <= 16; $i++) {   //16 ---> max Periode
-
-                    ${'s' . $i} = intval(mb_str_replace(',', '', $Row[$alphas[$i + 1]])); // i+1 reglage alphabet A-Z // to int // to replace , error
+                    $val=mb_str_replace(',', '', $Row[$alphas[$i + 1]]);
+                    $val=mb_str_replace(' ', '', $Row[$alphas[$i + 1]]);
+                    ${'s' . $i} = intval($val); // i+1 reglage alphabet A-Z // to int // to replace , error
                     if (!${'s' . $i}) {
                         ${'s' . $i} = 0;
                     }
@@ -166,11 +173,40 @@ class BesoinController extends AbstractController
             ->getResult();
 
 
-$i=0;
-        while ($besoin and $i<1){
+
+
+        $s = $this->getDoctrine()->getRepository(Stock::class);
+        $ss = $s->findAll();
+
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers);
+
+
+        $stock = $serializer->normalize($ss, null);
+        $Verif = $EclatService->VerifStock($stock, $besoin );
+
+
+
+        $stock= $Verif['stock'];
+        $besoin= $Verif['besoin'];
+
+        foreach ($besoin as $b) {                                ///// insert besoin as Production
+            $prod = new Production();
+            $prod->setNo($b['no']);
+            $prod->setQt($b['qt']);
+            $em->persist($prod);
+
+        }
+        $em->flush();
+        $em->clear();
+
+
+        $i=0;
+        while ($besoin ){
             $i++;
             //// Eclatement Besoin
             $EclatResult = $EclatService->Eclat( $besoin );
+
 
             $achat = $EclatResult['achat'];
             foreach ($achat as $b) {
@@ -180,6 +216,10 @@ $i=0;
             }
 
             $besoin = $EclatResult['prod'];
+            $Verif = $EclatService->VerifStock($stock, $besoin );
+            $stock= $Verif['stock'];
+            $besoin= $Verif['besoin'];
+
 
             if (sizeof($besoin) > 0) {
                 foreach ($besoin as $b) {
