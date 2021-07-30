@@ -39,9 +39,12 @@ class BesoinController extends AbstractController
 
         $besoin = $besoinRepository->findAll();
         $count=0;
+        $s1=0;
         foreach ($besoin as $b){
             if($b->getSomme()>0)
             $count++;
+            $s1+=$b->getS1();
+
         }
         $period = $periodRepository->findAll();
 
@@ -57,7 +60,8 @@ class BesoinController extends AbstractController
             'besoins' => $besoin,
             'form' => $form,
             'period' => $period[0],
-            'count'=>$count
+            'count'=>$count,
+            's1'=>$s1
         ]);
     }
 
@@ -271,7 +275,7 @@ class BesoinController extends AbstractController
 
         }
 
-        return $this->redirectToRoute('besoin_index');
+        return $this->redirectToRoute('Recapcbn');
     }
 
     /**

@@ -14,20 +14,16 @@ class EclatService extends AbstractController
     public function Eclat( $besoin)
     {
         $e = $this->getDoctrine()->getRepository(Nomenclature::class);
-
         $aa = [];
         $achat = [];
 
         foreach ($besoin as $b) {
-
-
             $nomc = $e->findBy(['BOM_No' => $b['no']]); //chercher les articles dans Nomenclature
             $qt = $b['qt'];
 
             foreach ($nomc as $n) {
                 $no = $n->getNo();
                 $somme = $n->getQtper() * $qt;
-
                 if ($n->getSystReap() == "1") {   ///Production
                     $p = new Production();
                     $p->setNo($no);
@@ -40,13 +36,9 @@ class EclatService extends AbstractController
                     $a->setQt($somme);
                     array_push($achat, $a);
                 }
-
             }
-
         }
         $prod = $this->sumGB($aa);
-
-
         return ['prod' => $prod,
             'achat' => $achat
            ];
