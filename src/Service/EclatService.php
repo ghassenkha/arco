@@ -7,11 +7,12 @@ use App\Entity\Nomenclature;
 use App\Entity\Eclat;
 use App\Entity\Production;
 use App\Entity\Stock;
+use phpDocumentor\Reflection\Types\String_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class EclatService extends AbstractController
 {
-    public function Eclat( $besoin)
+    public function Eclat($besoin)
     {
         $e = $this->getDoctrine()->getRepository(Nomenclature::class);
         $aa = [];
@@ -41,7 +42,7 @@ class EclatService extends AbstractController
         $prod = $this->sumGB($aa);
         return ['prod' => $prod,
             'achat' => $achat
-           ];
+        ];
     }
 
     public function sumGB($table)
@@ -71,14 +72,14 @@ class EclatService extends AbstractController
         if (sizeof($ss) > 0) { // if stock
             foreach ($besoin as $b => $bal) {
                 foreach ($ss as $st => $val) {
-                    if ($ss[$st]['no'] == $bal['no']) {
-                        if ($bal['qt'] >= $ss[$st]['qt']) {
+                    if ($val['no'] == (String)$bal['no']) {
+                        if ($bal['qt'] >= $val['qt']) {
 //                            $ss[$st]['qt'] = 0;
-                            $besoin[$b]['qt'] = $bal['qt'] - $ss[$st]['qt'];
+                            $besoin[$b]['qt'] = $bal['qt'] - $val['qt'];
                             unset($ss[$st]);
 
                         } else {
-                            $ss[$st]['qt'] = $ss[$st]['qt'] - $bal['qt'];
+                            $ss[$st]['qt'] = $val['qt'] - $bal['qt'];
 //                            $besoin[$b]['qt'] = 0;
                             unset($besoin[$b]);
                         }
@@ -91,6 +92,20 @@ class EclatService extends AbstractController
         return ['stock' => $ss,
             'besoin' => $besoin];
 
+    }
+
+    public function CasEmp($besoin)
+    {
+
+            $e = $this->getDoctrine()->getRepository(Nomenclature::class);
+
+
+            $nomc = $e->findBy(['No' => $besoin->getNo()]); //chercher les articles dans Nomenclature
+
+            dd($nomc);
+        foreach ($nomc as $n)
+        dd($b->getNo(),$n->getQtPer(),$n->getBOMNo());
+        return $nomc;
     }
 
 
