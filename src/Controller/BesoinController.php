@@ -186,9 +186,8 @@ class BesoinController extends AbstractController
         $serializer = new Serializer($normalizers);
 
 
-        $stock = $serializer->normalize($ss, null);
+        $stock = $serializer->normalize($ss);
         $Verif = $EclatService->VerifStock($stock, $besoin );
-
 
 
         $stock= $Verif['stock'];
@@ -220,6 +219,7 @@ class BesoinController extends AbstractController
             }
 
             $besoin = $EclatResult['prod'];
+
             $Verif = $EclatService->VerifStock($stock, $besoin );
             $stock= $Verif['stock'];
             $besoin= $Verif['besoin'];
@@ -257,7 +257,9 @@ class BesoinController extends AbstractController
         }
         $q = $em->createQuery("select p.no,sum(p.qt) as somme
                                from App\Entity\Achat p
-                               GROUP BY p.no");
+                               where p.qt >=0
+                               GROUP BY p.no
+                               ");
         $besoin = $q->getResult();
 
         $qb = $em->createQueryBuilder();        //Reset Table Product

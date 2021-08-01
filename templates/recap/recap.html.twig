@@ -72,6 +72,34 @@
     </div>
 
     <div class="row">
+        <div class="col-lg-6 col-xl-3">
+            <a href="{{ path('besoin_index') }}">
+                <div class="card mb-3 widget-content bg-premium-dark">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Produit fini</div>
+                            <div class="widget-subheading">Nombre d'article PF</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers text-warning"><span>{{ nbpf }}</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3 widget-content bg-premium-dark">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Total Produit fini</div>
+                            <div class="widget-subheading">Total PF à Exporter</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers text-warning">
+                                <span>{{ totalpf |number_format(0, '.', ' ') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
         <div class="col-md-6 col-xl-3">
             <a href="{{ path('production_index') }}">
                 <div class="card mb-3 widget-content bg-midnight-bloom">
@@ -108,7 +136,7 @@
                 <div class="card mb-3 widget-content bg-arielle-smile">
                     <div class="widget-content-wrapper text-white">
                         <div class="widget-content-left">
-                            <div class="widget-heading">Achat</div>
+                            <div class="widget-heading">Nombre des composants</div>
                             <div class="widget-subheading">Nombre des articles Achat</div>
                         </div>
                         <div class="widget-content-right">
@@ -133,32 +161,38 @@
             </a>
         </div>
 
-
-        <div class="col-lg-6 col-xl-3">
-            <div class="card mb-3 widget-content bg-premium-dark">
-                <div class="widget-content-wrapper text-white">
-                    <div class="widget-content-left">
-                        <div class="widget-heading">Produit fini</div>
-                        <div class="widget-subheading">Nombre d'article PF</div>
-                    </div>
-                    <div class="widget-content-right">
-                        <div class="widget-numbers text-warning"><span>{{ nbpf }}</span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="card mb-3 widget-content bg-premium-dark">
-                <div class="widget-content-wrapper text-white">
-                    <div class="widget-content-left">
-                        <div class="widget-heading">Total Produit fini</div>
-                        <div class="widget-subheading">Total PF à Exporter</div>
-                    </div>
-                    <div class="widget-content-right">
-                        <div class="widget-numbers text-warning"><span>{{ totalpf |number_format(0, '.', ' ') }}</span>
+        <div class="col-md-6 col-xl-3">
+            <a href="{{ path('achat_index') }}">
+                <div class="card mb-3 widget-content bg-success">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">PF </div>
+                            <div class="widget-subheading">Nombre des articles Achat</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers text-white"><span>65 / {{ nbpf }}</span></div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
+            <a href="{{ path('repture_index') }}">
+                <div class="card mb-3 widget-content bg-danger">
+                    <div class="widget-content-wrapper text-white">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">PF Impossible de réaliser</div>
+                            <div class="widget-subheading">Composant + MP</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers text-white">
+                                <span>100 (350K)</span></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
         </div>
+
+
+
 
         <div class="col-md-4">
             <div class="main-card mb-3 card">
