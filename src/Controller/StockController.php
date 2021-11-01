@@ -63,7 +63,7 @@ class StockController extends AbstractController
         $i = 0;
         foreach ($sheetData as $Row) {
             $no = $Row['A'];
-            $qt = $Row['B'];
+            $qt = floatval($Row['B']);
 
 
 //            $qt = mb_str_replace(',', '', $Row[$alphas[1]]);

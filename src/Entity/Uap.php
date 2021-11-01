@@ -27,6 +27,16 @@ class Uap
      */
     private $section;
 
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $eff;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $ineff;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,6 +62,30 @@ class Uap
     public function setSection(string $section): self
     {
         $this->section = $section;
+
+        return $this;
+    }
+
+    public function getEff(): ?float
+    {
+        return $this->eff;
+    }
+
+    public function setEff(float $eff): self
+    {
+        $this->eff = $eff;
+
+        return $this;
+    }
+
+    public function getIneff(): ?float
+    {
+        return $this->ineff;
+    }
+
+    public function setIneff(float $ineff): self
+    {
+        $this->ineff = $ineff;
 
         return $this;
     }

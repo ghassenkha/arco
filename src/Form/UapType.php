@@ -14,6 +14,8 @@ class UapType extends AbstractType
         $builder
             ->add('poste')
             ->add('section')
+            ->add('eff')
+            ->add('ineff')
         ;
     }
 

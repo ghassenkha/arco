@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Achat;
+use App\Entity\Article;
 use App\Entity\Besoin;
 use App\Entity\Gamme;
 use App\Entity\Production;
@@ -25,7 +26,9 @@ class RecapprodController extends AbstractController
     public function index(): Response
     {
 
+
         $gammeRepository = $this->getDoctrine()->getRepository(Gamme::class);
+        $articleRepository = $this->getDoctrine()->getRepository(Article::class);
         $productionRepository = $this->getDoctrine()->getRepository(Production::class);
         $uapRepository = $this->getDoctrine()->getRepository(Uap::class);
 
@@ -36,10 +39,12 @@ class RecapprodController extends AbstractController
         foreach ($gamme as $g){
             $prod = $productionRepository->findOneBy(['no'=>$g->getNo()]);
             $uap= $uapRepository->findOneBy(['poste'=>$g->getPoste()]);
-            if ($prod){
+            $article= $articleRepository->findOneBy(['No_'=>$g->getNo()]);
+            if ($prod and  $prod->getQt()>0 ){
                 $total+=$prod->getQt();
                 $no=$prod->getNo();
                 $qt=$prod->getQt();
+                $qtmax=$prod->getQt();
                 $op=$g->getOp();
                 $poste=$g->getPoste();
                 $prep=$g->getSetup();
@@ -49,26 +54,24 @@ class RecapprodController extends AbstractController
 
                 array_push($Result,[
                     'no'=>$no,
+                    'article'=>$article->getDescription(),
                     'qt'=>$qt,
+                    'qtmax'=>$qtmax,
                     'op'=>$op,
                     'poste'=>$poste,
                     'prep'=>$prep,
                     'run'=>$run,
                     'qth'=>$qth,
                     'qtmo'=>$qtmo,
+                    'eff'=>$uap->getEff(),
                     'section'=>$uap->getSection(),
-
                 ]);
             }
-        }dd($Result);
+        }
 
 
-
-
-
-
-        return $this->render('gamme/index.html.twig', [
-            'gammes' => $gammeRepository->findAll(),
+        return $this->render('recapprod/index.html.twig', [
+            'prods' => $Result,
         ]);
     }
 }

@@ -11,6 +11,8 @@
                 <th>Id</th>
                 <th>Poste</th>
                 <th>Section</th>
+                <th>eff</th>
+                <th>ineff</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -20,6 +22,8 @@
                 <td>{{ uap.id }}</td>
                 <td>{{ uap.poste }}</td>
                 <td>{{ uap.section }}</td>
+                <td>{{ uap.eff }}</td>
+                <td>{{ uap.ineff }}</td>
                 <td>
                     <a href="{{ path('uap_show', {'id': uap.id}) }}">show</a>
                     <a href="{{ path('uap_edit', {'id': uap.id}) }}">edit</a>

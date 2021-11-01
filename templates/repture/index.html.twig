@@ -14,6 +14,7 @@
                 <th>Ecart</th>
                 <th>Taux de couverture</th>
                 <th>A Commander (ecart+10%)</th>
+                <th>Origine</th>
             </tr>
         </thead>
         <tbody>
@@ -25,6 +26,7 @@
                 <td>{{ achat.ecart }}</td>
                 <td>{{ achat.couv|number_format(0, '.', '') }} % </td>
                 <td>{{ achat.acmd }}</td>
+                <td>{{ achat.origine }}</td>
 
             </tr>
         {% else %}
