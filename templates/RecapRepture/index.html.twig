@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recap Repture{% endblock %}
+
+{% block body %}
+    <h1>Repture index</h1>
+
+    <table id="example" class="table">
+        <thead>
+        <tr>
+            <th>Origine (Besoin)</th>
+            <th>Besoin</th>
+            <th>Max O.F</th>
+            <th>Composant</th>
+            <th>Stock Composant</th>
+            <th>Besoin / Stock / T_besoin_composant</th>
+            <th>A Commandé (+10%) </th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for Result in Results %}
+            <tr>
+                <td class="text-danger">{{ Result.origine  }}</td>
+                <td>{{ Result.besoin  }}</td>
+                <td>{{ Result.besoin  }}</td>
+                <td>{{ Result.achat }}</td>
+                <td>{{ Result.stock |number_format(0, '.', '') }}</td>
+                <td>{{ Result.qt |number_format(0, '.', '') }} / {{ Result.stock |number_format(0, '.', '') }} / {{ Result.totalcmp |number_format(0, '.', '')}}</td>
+                <td>{{ Result.acmd |number_format(0, '.', '')}}</td>
+
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('achat_new') }}">Create new</a>
+{% endblock %}

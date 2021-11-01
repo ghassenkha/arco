@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recap Production{% endblock %}
+
+{% block body %}
+
+    <h1>Recap Production</h1>
+
+    <table id="example" class="table table-hover table-striped table-bordered dataTable dtr-inline">
+        <thead>
+            <tr>
+                <th>No</th>
+
+                <th>Article</th>
+                <th>Qt</th>
+                <th>Qt MAX</th>
+                <th>Poste de charge</th>
+                <th>run time (min)</th>
+                <th>Qt MO (p)</th>
+                <th>efficience</th>
+                <th>Section</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for prod in prods %}
+            <tr>
+                <td ><a href="#">{{ prod.no }}</a></td>
+                <td>{{ prod.article }}</td>
+                <td>{{ prod.qt }}</td>
+                <td><a href="{{ path('uap_show', {'id': prod.no}) }}">{{  prod.qtmax }}</a></td>
+                <td>{{ prod.poste }}</td>
+                <td>{{ prod.qth }}</td>
+                <td>{{ prod.qtmo }}</td>
+                <td>{{ prod.eff }} %</td>
+                <td>{{ prod.section }}</td>
+
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('achat_new') }}">Create new</a>
+{% endblock %}
