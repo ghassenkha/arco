@@ -35,7 +35,7 @@ class ReptureController extends AbstractController
                 $ecart=$stock-$p->getQt();
                 $couv=100*$stock/$p->getQt();
                 $acmd= $ecart*1.1;
-            	array_push($achats,["no"=> $p->getNo(),"qt"=>$p->getQt(),"origine"=>$p->getOrigine(),"stock"=>$stock,"ecart"=>$ecart,"couv"=>$couv,"acmd"=>$acmd]);
+            	array_push($achats,["no"=> $p->getNo(),"qt"=>$p->getQt(),"stock"=>$stock,"ecart"=>$ecart,"couv"=>$couv,"acmd"=>$acmd]);
             }
 
 
